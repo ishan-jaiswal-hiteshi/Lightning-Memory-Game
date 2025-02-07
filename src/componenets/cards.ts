@@ -1,4 +1,4 @@
-import { Colors, Lightning } from '@lightningjs/sdk'
+import { Lightning } from '@lightningjs/sdk'
 import Color from '@lightningjs/sdk/src/Colors'
 
 export default class Card extends Lightning.Component {
@@ -6,35 +6,30 @@ export default class Card extends Lightning.Component {
   public revealed = false
   public disabled = false
   private _focusAnimation: any
+
   static override _template() {
     return {
       w: 240,
       h: 220,
       interactive: true,
-      flexItem: { margin: 7 },
       collision: true,
+      flexItem: { margin: 7 },
       rect: true,
-      color: Color('white').alpha(0.5).get(), // Back-of-card (gray)
+      color: Color('white').alpha(0.5).get(),
       shader: {
         type: Lightning.shaders.RoundedRectangle,
         radius: 10,
-        // stroke: {
-        //   width: 10,
-        //   color: Colors("white").get(),
-        // },
       },
-      smooth: { alpha: 1 },
-      // Focus indicator overlay (hidden by default)
       FocusRect: {
-        collision: true,
         rect: true,
         w: 240,
         h: 220,
         visible: false,
         color: Color('red').get(),
+        interactive: true,
+        collision: true,
       },
       Letter: {
-        collision: true,
         x: 120,
         y: 110,
         mountX: 0.5,
@@ -47,12 +42,11 @@ export default class Card extends Lightning.Component {
   override _init(): void {
     this.revealed = false
     this.disabled = false
-
     this._focusAnimation = this.tag('FocusRect').animation({
       duration: 0.2,
       actions: [
-        { p: 'scale', v: { 0: 1, 1: 1.03 } }, // Scale up the FocusRect
-        { p: 'alpha', v: { 0: 0.5, 1: 1 } }, // Fade in the FocusRect
+        { p: 'scale', v: { 0: 1, 1: 1.03 } }, // Scale up slightly on focus.
+        { p: 'alpha', v: { 0: 0.5, 1: 1 } }, // Fade in the focus rectangle.
       ],
     })
   }
@@ -62,7 +56,7 @@ export default class Card extends Lightning.Component {
       this.revealed = true
       this.patch({
         Letter: { text: { text: this.letter } },
-        color: Color('white').get(), // White background when revealed.
+        color: Color('white').get(),
       })
     }
   }
@@ -74,7 +68,6 @@ export default class Card extends Lightning.Component {
         Letter: { text: { text: '' } },
         color: 0xff888888,
       })
-      this._refocus()
     }
   }
 
@@ -97,7 +90,16 @@ export default class Card extends Lightning.Component {
     this._focusAnimation.stop()
   }
 
-  handleClick() {
+  _handleClick() {
+    console.log('clicke fromcard')
     this._handleEnter()
+  }
+
+  _handleHover() {
+    this._focus()
+  }
+
+  _handleUnhover() {
+    this._unfocus()
   }
 }
