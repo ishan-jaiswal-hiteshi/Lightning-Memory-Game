@@ -11,7 +11,7 @@ export default class Card extends Lightning.Component {
     return {
       w: 240,
       h: 220,
-      interactive: true,
+      //interactive: true,
       collision: true,
       flexItem: { margin: 7 },
       rect: true,
@@ -26,8 +26,8 @@ export default class Card extends Lightning.Component {
         h: 220,
         visible: false,
         color: Color('red').get(),
-        interactive: true,
-        collision: true,
+        //interactive: true,
+        //collision: true,
       },
       Letter: {
         x: 120,
@@ -45,8 +45,8 @@ export default class Card extends Lightning.Component {
     this._focusAnimation = this.tag('FocusRect').animation({
       duration: 0.2,
       actions: [
-        { p: 'scale', v: { 0: 1, 1: 1.03 } }, // Scale up slightly on focus.
-        { p: 'alpha', v: { 0: 0.5, 1: 1 } }, // Fade in the focus rectangle.
+        { p: 'scale', v: { 0: 1, 1: 1.03 } },
+        { p: 'alpha', v: { 0: 0.5, 1: 1 } },
       ],
     })
   }
@@ -91,7 +91,6 @@ export default class Card extends Lightning.Component {
   }
 
   _handleClick() {
-    console.log('clicke fromcard')
     this._handleEnter()
   }
 

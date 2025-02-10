@@ -11,7 +11,7 @@ export default class MemoryGame extends Lightning.Component {
 
   static override _template() {
     return {
-      Background: { w: 1920, h: 1080, rect: true, color: 0xff202020 },
+      Background: { w: 1920, h: 1080, rect: true, color: Color('black').get() },
       Score: {
         x: 20,
         y: 20,
@@ -38,30 +38,30 @@ export default class MemoryGame extends Lightning.Component {
         y: 440,
         //mount: 0.5,
         visible: true,
-        interactive: true,
+        //interactive: true,
         // flexItem: {
         //   justifyContent: "center",
         //   alignItem: "center",
         // },
-        collision: true,
+        //collision: true,
         StartButton: {
           w: 300,
           h: 80,
           rect: true,
-          color: Color('white').get(),
-          interactive: true,
+          //color: Color("white").get(),
+          //interactive: true,
           collision: true,
           text: {
             text: 'Start Game',
-            fontSize: 44,
+            fontSize: 43,
             FontFace: 'SemiBold',
             textColor: Color('red').get(),
-            collision: true,
+            //collision: true,
           },
         },
         TimerText: {
           y: 100,
-          text: { text: '', fontSize: 28, textColor: Color('green').get() },
+          text: { text: '', fontSize: 25, textColor: Color('green').get() },
           visible: false,
         },
       },
@@ -83,13 +83,13 @@ export default class MemoryGame extends Lightning.Component {
       type: Card,
       letter: letter,
       index: index,
-      interactive: true,
-      collision: true,
+      //interactive: true,
+      //collision: true,
     }))
     this.tag('Grid').children = cards
-    if (cards.length > 0) {
-      //this.activeItem = this.tag("Grid").children[0];
-    }
+    // if (cards.length > 0) {
+    //   this.activeItem = this.tag("Grid").children[0];
+    // }
   }
 
   public $handleCardSelect(card: Card): void {
@@ -117,8 +117,8 @@ export default class MemoryGame extends Lightning.Component {
         this.secondCard = null
         if (this.score === 8) {
           this._setState('Wait')
-          const elapsed = Date.now() - this.startTime
-          const seconds = Math.floor(elapsed / 1000)
+          const compleatedIn = Date.now() - this.startTime
+          const seconds = Math.floor(compleatedIn / 1000)
           setTimeout(() => {
             this.patch({
               StartScreen: {
@@ -135,13 +135,14 @@ export default class MemoryGame extends Lightning.Component {
           }, 2000)
         }
       } else {
+        //this disables controls
         this._setState('Wait')
         setTimeout(() => {
           this.firstCard && this.firstCard.hide()
           this.secondCard && this.secondCard.hide()
           this.firstCard = null
           this.secondCard = null
-          this._setState('Idle')
+          this._setState('Playing')
         }, 1000)
       }
     }
@@ -160,10 +161,10 @@ export default class MemoryGame extends Lightning.Component {
     })
     this._buildCards()
     const gridChildren = this.tag('Grid').children
-    if (gridChildren && gridChildren.length > 0) {
-      //this.activeItem = gridChildren[0];
-    }
-    this._setState('Idle')
+    // if (gridChildren && gridChildren.length > 0) {
+    //   this.activeItem = gridChildren[0];
+    // }
+    this._setState('Playing')
   }
 
   static override _states() {
@@ -176,12 +177,14 @@ export default class MemoryGame extends Lightning.Component {
             Grid: { visible: false },
           })
         }
-        override _handleEnter() {
+
+        override _handleEnterRelease() {
           this.startGame()
         }
-        override _handleClick() {
+        _handleClick() {
           this.startGame()
         }
+
         _handleHover() {
           this.tag('StartScreen.StartButton').patch({
             text: {
@@ -191,6 +194,7 @@ export default class MemoryGame extends Lightning.Component {
             },
           })
         }
+
         _handleUnhover() {
           this.tag('StartScreen.StartButton').patch({
             text: {
@@ -201,7 +205,7 @@ export default class MemoryGame extends Lightning.Component {
           })
         }
       },
-      class Idle extends MemoryGame {
+      class Playing extends MemoryGame {
         override $enter() {
           this.patch({
             StartScreen: { visible: false },
@@ -245,9 +249,9 @@ export default class MemoryGame extends Lightning.Component {
             this.patch({})
           }
         }
-        override _getFocused() {
-          return this.activeItem
-        }
+        // override _getFocused() {
+        //   return this.activeItem;
+        // }
       },
       // class Wait extends MemoryGame {
       //   //so that it holds on wait
@@ -256,15 +260,9 @@ export default class MemoryGame extends Lightning.Component {
     ]
   }
 
-  override _handleEnterRelease(): void {
-    if (this.state === 'Idle' && this.activeItem) {
-      //this.activeItem._handleEnter();
-    }
-  }
-
-  _handleClick() {
-    if (this.state === 'Start') {
-      this.startGame()
-    }
-  }
+  // override _handleEnterRelease(): void {
+  //   if (this.state === "Playing" && this.activeItem) {
+  //     //this.activeItem._handleEnter();
+  //   }
+  // }
 }
